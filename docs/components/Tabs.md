@@ -111,3 +111,46 @@ This component can accept a `classes` prop to customize the output HTML classes:
 ```
 :classes="{ root: 'root-class', tablist: 'tablist-class', tab: 'tab-class' }"
 ```
+
+## Events
+
+The component emits a `tabChange` event when the tab changes from a click or keydown.
+
+Event arguments are passed in an object with the following properties:
+
+- `event`: The original event object
+- `tab`: The slot name for the active tab (ie 'Tab Label 1')
+- `index`: The active index of the tab
+
+```vue
+<template>
+  <VTabs @tabChange="tabChanged">
+    <template slot="Tab Label 1">
+      This is my content for tab 1
+    </template>
+
+    <template slot="Tab Label 2">
+      Here's the content for tab 2.
+      <p>It supports markup, and any any other components.</p>
+    </template>
+  </VTabs>
+</template>
+
+<script>
+// SomeComponent.vue
+import { VTabs } from 'vuetensils/src/components';
+
+export default {
+  components: {
+    VTabs,
+  },
+  methods: {
+    tabChanged({ event, tab, index }) {
+      if (tab === "Tab Label 1") {
+        // Do something
+      }
+    }
+  }
+};
+</script>
+```

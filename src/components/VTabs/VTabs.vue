@@ -16,8 +16,8 @@
         :aria-controls="`${id}-panel-${index}`"
         :class="[`vts-tabs__tab vts-tabs__tab--${index}`, classes.tab]"
         role="tab"
-        @keydown="onKeydown"
-        @click="activeIndex = index"
+        @keydown="onKeydown($event, tab, index)"
+        @click="onClick($event, tab, index)"
       >
         {{ tab }}
       </button>
@@ -92,8 +92,15 @@ export default {
   },
 
   methods: {
-    onKeydown(event) {
+    onClick(event, tab, index) {
+      if (this.activeIndex !== index) {
+        this.$nextTick(() => this.$emit('tabChange', { event, tab, index }));
+      }
+      this.activeIndex = index;
+    },
+    onKeydown(event, tab, index) {
       const { keyCode } = event;
+      const oldIndex = this.activeIndex;
       switch (keyCode) {
         case keycodes.END:
           event.preventDefault();
@@ -112,6 +119,14 @@ export default {
         case keycodes.DOWN:
           this.determineOrientation(event);
           break;
+      }
+
+      if (oldIndex !== this.activeIndex) {
+        this.$nextTick(() => this.$emit('tabChange', { 
+          event, 
+          tab: this.tablist[this.activeIndex], 
+          index: this.activeIndex 
+        }));
       }
     },
 
